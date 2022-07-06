@@ -118,11 +118,7 @@ class RegisterPage : Fragment() {
         })
 
         button.setOnClickListener {
-            /*val transaction = activity!!.supportFragmentManager.beginTransaction()
-
-            transaction.replace(R.id.titleFragment, RegisterPage())
-            transaction.disallowAddToBackStack()
-            transaction.commit()*/
+            
         }
 
         val loginTransition = contain.findViewById<Button>(R.id.button_to_register)
