@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">LoginRegisterApp</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="Email">Enter a valid email</string>
+    <string name="Password">Enter Password</string>
+    <string name="LastName">Enter Last Name</string>
+    <string name="FirstName">Enter First Name</string>
+    <string name="register_today">Register Today!</string>
+    <string name="link_register_today">Don\'t have an account?</string>
+    <string name="have_an_account">Already have an account?</string>
+</resources>
