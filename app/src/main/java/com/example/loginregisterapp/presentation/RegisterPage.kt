@@ -1,4 +1,4 @@
-package com.example.loginregisterapp
+package com.example.loginregisterapp.presentation
 
 import android.os.Bundle
 import android.text.Editable
@@ -9,9 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageButton
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.navigation.Navigation
+import com.example.loginregisterapp.R
 import com.google.android.material.textfield.TextInputEditText
 
 

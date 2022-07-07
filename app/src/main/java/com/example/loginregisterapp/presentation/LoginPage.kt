@@ -1,25 +1,16 @@
-package com.example.loginregisterapp
+package com.example.loginregisterapp.presentation
 
 import android.os.Bundle
 import android.text.Editable
-import android.text.Layout
 import android.text.TextUtils
-import android.text.TextUtils.replace
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
-import androidx.navigation.NavGraphNavigator
-import androidx.navigation.Navigation
 import androidx.navigation.Navigation.findNavController
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
+import com.example.loginregisterapp.R
 import com.google.android.material.textfield.TextInputEditText
 
 
