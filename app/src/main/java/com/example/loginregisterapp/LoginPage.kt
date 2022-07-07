@@ -40,7 +40,7 @@ class LoginPage : Fragment(){
         contain = getView()!!
         val email = contain.findViewById<TextInputEditText>(R.id.EmailAddress)
         val pass = contain.findViewById<TextInputEditText>(R.id.Password)
-        button = contain.findViewById(R.id.button_submit)
+        button = contain.findViewById(R.id.button_submit_login)
         registerTransition = contain.findViewById(R.id.button_to_login)
         var validEmail = false
         var validPass = false
@@ -72,18 +72,10 @@ class LoginPage : Fragment(){
         })
 
         button.setOnClickListener {
-            /*val transaction = activity!!.supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.titleFragment, RegisterPage())
-            transaction.disallowAddToBackStack()
-            transaction.commit()*/
         }
 
 
         registerTransition.setOnClickListener {
-            /*val transaction = activity!!.supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.titleFragment, RegisterPage())
-            transaction.addToBackStack("name")
-            transaction.commit()*/
             val navGraphNavigator = findNavController(contain)
             navGraphNavigator.navigate(R.id.action_loginPage_to_registerPage2)
         }
