@@ -37,70 +37,70 @@
             </TextView>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/TextInputLayoutFirstName"
+                android:id="@+id/Register_TextInputLayoutFirstName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:hint="@string/FirstName">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/first_name"
+                    android:id="@+id/Register_first_name"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="textEmailAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/TextInputLayoutLastName"
+                android:id="@+id/Register_TextInputLayoutLastName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:hint="@string/LastName">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/last_name"
+                    android:id="@+id/Register_last_name"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="textEmailAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/TextInputLayoutEmailAddress"
+                android:id="@+id/Register_TextInputLayoutEmailAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:hint="@string/Email">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/EmailAddress"
+                    android:id="@+id/Register_EmailAddress"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="textEmailAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/TextInputLayoutPassword"
+                android:id="@+id/Register_TextInputLayoutPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:hint="@string/Password">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/Password"
+                    android:id="@+id/Register_Password"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/TextInputLayoutConfirmPassword"
+                android:id="@+id/Register_TextInputLayoutConfirmPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:hint="@string/Password">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/ConfirmPassword"
+                    android:id="@+id/Register_ConfirmPassword"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="textPassword" />

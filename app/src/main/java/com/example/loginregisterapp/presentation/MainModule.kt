@@ -13,6 +13,7 @@ val appModule = module{
         factory { ValidationName() }
         factory { ValidationConfirmPassword() }
         factory { LoginPageViewModel(get()) }
+        factory { RegisterPageViewModel(get()) }
         /*factory { LoginViewModel(get()) }
         factory { ProfileViewModel(get()) }*/
 

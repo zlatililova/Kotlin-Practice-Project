@@ -1,19 +1,13 @@
 package com.example.loginregisterapp.presentation
 
-import androidx.compose.runtime.getValue
+
 import androidx.lifecycle.ViewModel
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.example.loginregisterapp.domain.use_case.ValidationEmail
 import com.example.loginregisterapp.domain.use_case.ValidationPassword
-import com.example.loginregisterapp.presentation.LoginPageEvent.*
-import com.example.loginregisterapp.presentation.states.LoginPageState
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import java.util.ArrayList
 
 class LoginPageViewModel(
@@ -21,7 +15,7 @@ class LoginPageViewModel(
     val validationPassword: ValidationPassword = ValidationPassword()
 ): ViewModel() {
 
-   private var email: String = ""
+    private var email: String = ""
     private var pass : String = ""
 
     fun setEmail(email: String){
@@ -34,9 +28,6 @@ class LoginPageViewModel(
 
     private val _uiState = MutableStateFlow<UIState>(UIState.Initial)
     val uiState : StateFlow<UIState> = _uiState
-
-
-
 
     sealed class UIState {
         object Initial: UIState()

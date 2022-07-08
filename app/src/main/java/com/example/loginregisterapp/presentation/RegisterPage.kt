@@ -9,21 +9,33 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+
 import androidx.navigation.Navigation
 import com.example.loginregisterapp.R
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 
 class RegisterPage : Fragment() {
 
     lateinit var button: Button
-    lateinit var contain: View
-    var validEmail = false
-    var validPass = false
-    var samepass = false
-    var validfname = false
-    var validlname = false
+    lateinit var emailLayout: TextInputLayout
+    lateinit var passwordLayout: TextInputLayout
+    lateinit var confpassLayout: TextInputLayout
+    lateinit var fnameLayout: TextInputLayout
+    lateinit var lnameLayout: TextInputLayout
+    val viewModel: RegisterPageViewModel by viewModel()
+
 
 
     override fun onCreateView(
@@ -34,23 +46,25 @@ class RegisterPage : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        contain = getView()!!
-        val fname = contain.findViewById<TextInputEditText>(R.id.first_name)
-        val lname = contain.findViewById<TextInputEditText>(R.id.last_name)
-        val email = contain.findViewById<TextInputEditText>(R.id.EmailAddress)
-        val pass = contain.findViewById<TextInputEditText>(R.id.Password)
-        var confpass = contain.findViewById<TextInputEditText>(R.id.ConfirmPassword)
-        var password : String = ""
-        button = contain.findViewById(R.id.button_submit_register)
+
+        val fname = view.findViewById<TextInputEditText>(R.id.Register_first_name)
+        val lname = view.findViewById<TextInputEditText>(R.id.Register_last_name)
+        val email = view.findViewById<TextInputEditText>(R.id.Register_EmailAddress)
+        val pass = view.findViewById<TextInputEditText>(R.id.Register_Password)
+        var confpass = view.findViewById<TextInputEditText>(R.id.Register_ConfirmPassword)
+        button = view.findViewById(R.id.button_submit_register)
+        emailLayout = view.findViewById(R.id.Register_TextInputLayoutEmailAddress)
+        passwordLayout = view.findViewById(R.id.Register_TextInputLayoutPassword)
+        fnameLayout = view.findViewById(R.id.Register_TextInputLayoutFirstName)
+        lnameLayout = view.findViewById(R.id.Register_TextInputLayoutLastName)
+        confpassLayout = view.findViewById(R.id.Register_TextInputLayoutConfirmPassword)
+
+
 
         fname.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(s:CharSequence, start:Int, before:Int, count:Int) {
-                if (!TextUtils.isEmpty(s)) {
-                    println("fname is true")
-                    validfname = true
-                    Activate()
-                }
+                viewModel.setfname(s.toString())
             }
             override fun afterTextChanged(p0: Editable?) {}
         })
@@ -58,11 +72,8 @@ class RegisterPage : Fragment() {
         lname.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(s:CharSequence, start:Int, before:Int, count:Int) {
-                if (!TextUtils.isEmpty(s)) {
-                    println("lname is true")
-                    validlname = true
-                    Activate()
-                }
+                viewModel.setlname(s.toString())
+
             }
             override fun afterTextChanged(p0: Editable?) {}
         })
@@ -70,11 +81,8 @@ class RegisterPage : Fragment() {
         email.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(s:CharSequence, start:Int, before:Int, count:Int) {
-                if (!TextUtils.isEmpty(s) && android.util.Patterns.EMAIL_ADDRESS.matcher(s).matches()) {
-                    println("email is true")
-                    validEmail = true
-                    Activate()
-                }
+                viewModel.setemail(s.toString())
+
             }
             override fun afterTextChanged(p0: Editable?) {}
         })
@@ -82,14 +90,8 @@ class RegisterPage : Fragment() {
         pass.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(s:CharSequence, start:Int, before:Int, count:Int) {
-                if (!TextUtils.isEmpty(s)){
-                    if(s.length > 6){
-                        println("pass is true")
-                        password = s.toString()
-                        validPass = true
-                        Activate()
-                    }
-                }
+                viewModel.setpass(s.toString())
+
             }
             override fun afterTextChanged(p0: Editable?) {}
         })
@@ -97,41 +99,79 @@ class RegisterPage : Fragment() {
         confpass.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(s:CharSequence, start:Int, before:Int, count:Int) {
-                if (!TextUtils.isEmpty(s)){
-                    if(s.toString().equals(password)){
-                        println("pass is same")
-                        samepass = true
-                        Activate()
-                    }
-                }
+                viewModel.setConfPass(s.toString())
+
             }
             override fun afterTextChanged(p0: Editable?) {}
         })
 
         button.setOnClickListener {
-            
+            viewModel.register()
         }
 
-        val loginTransition = contain.findViewById<Button>(R.id.button_to_register)
+        observeViewModel()
+
+        val loginTransition = view.findViewById<Button>(R.id.button_to_register)
 
         loginTransition.setOnClickListener {
-            val navGraphNavigator = Navigation.findNavController(contain)
+            val navGraphNavigator = Navigation.findNavController(view)
             navGraphNavigator.navigate(R.id.action_registerPage_to_loginPage2)
         }
 
-        val backStackButton = contain.findViewById<AppCompatImageView>(R.id.back_stack_btn)
+        val backStackButton = view.findViewById<AppCompatImageView>(R.id.back_stack_btn)
         backStackButton.setOnClickListener {
-            val navGraphNavigator = Navigation.findNavController(contain)
+            val navGraphNavigator = Navigation.findNavController(view)
             navGraphNavigator.popBackStack()
         }
 
     }
 
-    private fun Activate() {
-        if (validPass && validEmail && validlname && validfname && samepass){
-            println("Button can be enabled")
-            button.isEnabled = true
-            println(button.isEnabled)
+    private fun observeViewModel(){
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.uiState.onEach {
+                    when (it) {
+                        is LoginPageViewModel.UIState.Success -> {
+                            emailLayout.setError(null)
+                            passwordLayout.setError(null)
+                            Toast.makeText(
+                                context,
+                                "Registration successful",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        is LoginPageViewModel.UIState.Error -> {
+                            it.errors.forEach{
+                                when (it) {
+                                    is LoginPageViewModel.Errors.EmailError -> {
+                                        if(it.error == ""){
+                                            emailLayout.setError(null)
+                                        }
+                                        emailLayout.setError(it.error)
+                                    }
+                                    is LoginPageViewModel.Errors.PassError -> {
+                                        if(it.error == ""){
+                                            passwordLayout.setError(null)
+                                        }
+                                        passwordLayout.setError(it.error)
+                                    }
+                                }
+                            }
+                        }
+                        is LoginPageViewModel.UIState.Loading -> {
+                            emailLayout.setError(null)
+                            passwordLayout.setError(null)
+
+                        }
+                        else -> {
+
+                        }
+                    }
+                }.launchIn(this)
+            }
+
         }
     }
+
+
 }
