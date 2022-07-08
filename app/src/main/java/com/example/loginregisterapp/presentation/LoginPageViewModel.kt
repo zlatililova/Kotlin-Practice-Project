@@ -8,45 +8,74 @@ import androidx.lifecycle.viewModelScope
 import com.example.loginregisterapp.domain.use_case.ValidationEmail
 import com.example.loginregisterapp.domain.use_case.ValidationPassword
 import com.example.loginregisterapp.presentation.LoginPageEvent.*
+import com.example.loginregisterapp.presentation.states.LoginPageState
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import java.util.ArrayList
 
 class LoginPageViewModel(
     val validationEmail: ValidationEmail = ValidationEmail(),
     val validationPassword: ValidationPassword = ValidationPassword()
 ): ViewModel() {
 
-    var state by mutableStateOf(LoginPageState())
+   private var email: String = ""
+    private var pass : String = ""
 
-    private val validationEventChannel = Channel<ValidationEvent>()
-    val validationEvents = validationEventChannel.receiveAsFlow()
-
-    fun onEvent(event: LoginPageEvent){
-        when(event){
-            is EmailChanged -> state = state.copy(email = event.email)
-            is PasswordChanged -> state = state.copy(password = event.password)
-            is Submit -> submitData()
-        }
+    fun setEmail(email: String){
+        this.email = email
     }
 
-    private fun submitData() {
-        val email = validationEmail.execute(state.email)
-        val pass = validationPassword.execute(state.password)
+    fun setPass(pass: String){
+        this.pass = pass
+    }
 
-        if(!pass.successful || !email.successful){
-            state = state.copy(
-                emailError = email.errorMessage,
-                passwordError = pass.errorMessage
-            )
-            return
-        }
+    private val _uiState = MutableStateFlow<UIState>(UIState.Initial)
+    val uiState : StateFlow<UIState> = _uiState
+
+
+
+
+    sealed class UIState {
+        object Initial: UIState()
+        object Success: UIState()
+        object Loading: UIState()
+        class Error(val errors: ArrayList<Errors>): UIState()
+
+    }
+
+    sealed class Errors{
+        class EmailError(val error: String): Errors()
+        class PassError(val error: String): Errors()
+    }
+
+    fun login(){
         viewModelScope.launch {
-            validationEventChannel.send(ValidationEvent.Success)
-        }
-    }
+            val validEmail = validationEmail.execute(email)
+            val validPass = validationPassword.execute(pass)
 
-    sealed class ValidationEvent {
-        object Success: ValidationEvent()
+            if(validEmail.successful && validPass.successful){
+                _uiState.emit(UIState.Success)
+                return@launch
+            }
+            else{
+                val errors : ArrayList<Errors> = ArrayList()
+
+                validEmail.errors?.let {
+                    errors.add(Errors.EmailError(validEmail.errors))
+                }
+                validPass.errors?.let {
+                    errors.add(Errors.PassError(validPass.errors))
+                }
+                _uiState.emit(UIState.Error(errors))
+
+            }
+
+
+        }
+
+
     }
 }

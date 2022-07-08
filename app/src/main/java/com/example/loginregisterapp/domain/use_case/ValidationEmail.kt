@@ -11,6 +11,7 @@ class ValidationEmail {
         if(!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             return ValidationResult(false, "The email is not valid")
         }
+        println("email true")
         return ValidationResult(true)
     }
 }

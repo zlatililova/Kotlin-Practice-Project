@@ -22,12 +22,13 @@
             android:id="@+id/TextInputLayoutEmailAddress"
             android:hint="@string/Email"
             android:layout_marginTop="10dp"
-            app:errorEnabled="true">
+            app:errorEnabled="true"            >
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/EmailAddress"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:inputType="textEmailAddress"
+
                     />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -53,7 +54,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="50dp"
             android:text="Submit"
-            android:enabled="false"/>
+            android:enabled="true"/>
 
         <TextView
             android:layout_width="wrap_content"

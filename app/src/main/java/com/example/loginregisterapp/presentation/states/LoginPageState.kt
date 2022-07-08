@@ -1,4 +1,4 @@
-package com.example.loginregisterapp.presentation
+package com.example.loginregisterapp.presentation.states
 
 data class LoginPageState(
     val email: String = "",
