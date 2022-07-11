@@ -65,6 +65,7 @@ class RegisterPage : Fragment() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(s:CharSequence, start:Int, before:Int, count:Int) {
                 viewModel.setfname(s.toString())
+                changebutton(button, viewModel.checkValues())
             }
             override fun afterTextChanged(p0: Editable?) {}
         })
@@ -73,7 +74,7 @@ class RegisterPage : Fragment() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(s:CharSequence, start:Int, before:Int, count:Int) {
                 viewModel.setlname(s.toString())
-
+                changebutton(button, viewModel.checkValues())
             }
             override fun afterTextChanged(p0: Editable?) {}
         })
@@ -82,7 +83,7 @@ class RegisterPage : Fragment() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(s:CharSequence, start:Int, before:Int, count:Int) {
                 viewModel.setemail(s.toString())
-
+                changebutton(button, viewModel.checkValues())
             }
             override fun afterTextChanged(p0: Editable?) {}
         })
@@ -91,7 +92,7 @@ class RegisterPage : Fragment() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(s:CharSequence, start:Int, before:Int, count:Int) {
                 viewModel.setpass(s.toString())
-
+                changebutton(button, viewModel.checkValues())
             }
             override fun afterTextChanged(p0: Editable?) {}
         })
@@ -100,7 +101,7 @@ class RegisterPage : Fragment() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(s:CharSequence, start:Int, before:Int, count:Int) {
                 viewModel.setConfPass(s.toString())
-
+                changebutton(button, viewModel.checkValues())
             }
             override fun afterTextChanged(p0: Editable?) {}
         })
@@ -129,48 +130,74 @@ class RegisterPage : Fragment() {
     private fun observeViewModel(){
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.uiState.onEach {
+                viewModel.uiStateFlow.onEach {
                     when (it) {
-                        is LoginPageViewModel.UIState.Success -> {
+                        is RegisterPageViewModel.UIStateRegister.Success -> {
                             emailLayout.setError(null)
                             passwordLayout.setError(null)
+                            fnameLayout.setError(null)
+                            lnameLayout.setError(null)
+                            confpassLayout.setError(null)
                             Toast.makeText(
                                 context,
                                 "Registration successful",
                                 Toast.LENGTH_LONG
                             ).show()
                         }
-                        is LoginPageViewModel.UIState.Error -> {
+                        is RegisterPageViewModel.UIStateRegister.Error -> {
                             it.errors.forEach{
                                 when (it) {
-                                    is LoginPageViewModel.Errors.EmailError -> {
+                                    is RegisterPageViewModel.RegisterErrors.EmailError -> {
                                         if(it.error == ""){
                                             emailLayout.setError(null)
                                         }
                                         emailLayout.setError(it.error)
                                     }
-                                    is LoginPageViewModel.Errors.PassError -> {
+                                    is RegisterPageViewModel.RegisterErrors.PassError -> {
                                         if(it.error == ""){
                                             passwordLayout.setError(null)
                                         }
                                         passwordLayout.setError(it.error)
                                     }
+                                    is RegisterPageViewModel.RegisterErrors.FNameError -> {
+                                        if(it.error == ""){
+                                            fnameLayout.setError(null)
+                                        }
+                                        fnameLayout.setError(it.error)
+                                    }
+                                    is RegisterPageViewModel.RegisterErrors.LNameError -> {
+                                        if(it.error == ""){
+                                            lnameLayout.setError(null)
+                                        }
+                                        lnameLayout.setError(it.error)
+                                    }
+                                    is RegisterPageViewModel.RegisterErrors.ConfPassError -> {
+                                        if(it.error == ""){
+                                            confpassLayout.setError(null)
+                                        }
+                                        confpassLayout.setError(it.error)
+                                    }
                                 }
                             }
                         }
-                        is LoginPageViewModel.UIState.Loading -> {
+                        is RegisterPageViewModel.UIStateRegister.Loading -> {
                             emailLayout.setError(null)
                             passwordLayout.setError(null)
+                            fnameLayout.setError(null)
+                            lnameLayout.setError(null)
+                            confpassLayout.setError(null)
 
                         }
-                        else -> {
-
-                        }
+                        else -> {}
                     }
                 }.launchIn(this)
             }
 
         }
+    }
+
+    fun changebutton(button: Button, state: Boolean){
+        button.isEnabled = state
     }
 
 

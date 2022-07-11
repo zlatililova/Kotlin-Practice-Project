@@ -1,5 +1,6 @@
 package com.example.loginregisterapp.presentation
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.loginregisterapp.domain.use_case.ValidationConfirmPassword
 import com.example.loginregisterapp.domain.use_case.ValidationEmail
@@ -15,7 +16,7 @@ class RegisterPageViewModel(
     val validationPassword: ValidationPassword = ValidationPassword(),
     val validationName: ValidationName = ValidationName(),
     val validationConfirmPassword: ValidationConfirmPassword = ValidationConfirmPassword()
-) {
+): ViewModel() {
     private var fname: String = ""
     fun setfname(value: String) {
         fname = value
@@ -33,28 +34,27 @@ class RegisterPageViewModel(
         pass = value
         }
     private var confPass: String = ""
-
     fun setConfPass(value: String) {
         confPass = value
         }
 
-    private val _uiState = MutableStateFlow<LoginPageViewModel.UIState>(LoginPageViewModel.UIState.Initial)
-    val uiState : StateFlow<LoginPageViewModel.UIState> = _uiState
+    private val _uiStateFlow = MutableStateFlow<UIStateRegister>(UIStateRegister.Initial)
+    val uiStateFlow : StateFlow<UIStateRegister> = _uiStateFlow
 
-    sealed class UIState {
-        object Initial: UIState()
-        object Success: UIState()
-        object Loading: UIState()
-        class Error(val errors: ArrayList<Errors>): UIState()
+    sealed class UIStateRegister {
+        object Initial: UIStateRegister()
+        object Success: UIStateRegister()
+        object Loading: UIStateRegister()
+        class Error(val errors: ArrayList<RegisterErrors>): UIStateRegister()
 
     }
 
-    sealed class Errors{
-        class EmailError(val error: String): Errors()
-        class PassError(val error: String): Errors()
-        class FNameError(val error: String): Errors()
-        class LNameError(val error: String): Errors()
-        class ConfPassError(val error: String): Errors()
+    sealed class RegisterErrors{
+        class EmailError(val error: String): RegisterErrors()
+        class PassError(val error: String): RegisterErrors()
+        class FNameError(val error: String): RegisterErrors()
+        class LNameError(val error: String): RegisterErrors()
+        class ConfPassError(val error: String): RegisterErrors()
     }
 
     fun register(){
@@ -66,27 +66,26 @@ class RegisterPageViewModel(
             val validConfPass = validationConfirmPassword.execute(pass, confPass)
 
             if(validEmail.successful && validPass.successful && validFName.successful && validConfPass.successful && validLName.successful){
-                _uiState.emit(UIState.Success)
-                return@launch
+                _uiStateFlow.emit(UIStateRegister.Success)
             }
             else{
-                val errors : ArrayList<Errors> = ArrayList()
+                val errors : ArrayList<RegisterErrors> = ArrayList()
                 validEmail.errors?.let {
-                    errors.add(Errors.EmailError(validEmail.errors))
+                    errors.add(RegisterErrors.EmailError(validEmail.errors))
                 }
                 validPass.errors?.let {
-                    errors.add(Errors.PassError(validPass.errors))
+                    errors.add(RegisterErrors.PassError(validPass.errors))
                 }
                 validFName.errors?.let {
-                    errors.add(Errors.FNameError(validFName.errors))
+                    errors.add(RegisterErrors.FNameError(validFName.errors))
                 }
                 validLName.errors?.let {
-                    errors.add(Errors.LNameError(validLName.errors))
+                    errors.add(RegisterErrors.LNameError(validLName.errors))
                 }
                 validConfPass.errors?.let {
-                    errors.add(Errors.ConfPassError(validConfPass.errors))
+                    errors.add(RegisterErrors.ConfPassError(validConfPass.errors))
                 }
-                _uiState.emit(UIState.Error(errors))
+                _uiStateFlow.emit(UIStateRegister.Error(errors))
 
             }
 
@@ -94,5 +93,12 @@ class RegisterPageViewModel(
         }
 
 
+    }
+
+    fun checkValues(): Boolean{
+        if(email != "" && pass != "" && fname != "" && lname != "" && confPass != ""){
+            return true
+        }
+        return false
     }
 }

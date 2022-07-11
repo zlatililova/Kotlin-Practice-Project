@@ -91,7 +91,7 @@ class LoginPage : Fragment() {
                             passwordLayout.setError(null)
                             Toast.makeText(
                                 context,
-                                "Registration successful",
+                                "Login successful",
                                 Toast.LENGTH_LONG
                             ).show()
                         }
