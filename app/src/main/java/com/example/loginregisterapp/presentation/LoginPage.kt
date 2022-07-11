@@ -55,6 +55,7 @@ class LoginPage : Fragment() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 viewModel.setEmail(s.toString())
+                changebutton(loginButton, viewModel.checkValues())
             }
 
             override fun afterTextChanged(p0: Editable?) {}
@@ -64,6 +65,7 @@ class LoginPage : Fragment() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 viewModel.setPass(s.toString())
+                changebutton(loginButton, viewModel.checkValues())
             }
 
             override fun afterTextChanged(p0: Editable?) {}
@@ -126,6 +128,10 @@ class LoginPage : Fragment() {
             }
 
         }
+    }
+
+    private fun changebutton(button: Button, state: Boolean){
+        button.isEnabled = state
     }
 }
 

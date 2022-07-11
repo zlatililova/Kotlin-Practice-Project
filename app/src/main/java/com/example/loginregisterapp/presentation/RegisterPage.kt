@@ -196,7 +196,7 @@ class RegisterPage : Fragment() {
         }
     }
 
-    fun changebutton(button: Button, state: Boolean){
+    private fun changebutton(button: Button, state: Boolean){
         button.isEnabled = state
     }
 

@@ -69,4 +69,11 @@ class LoginPageViewModel(
 
 
     }
+
+    fun checkValues(): Boolean{
+        if(email != "" && pass != ""){
+            return true
+        }
+        return false
+    }
 }

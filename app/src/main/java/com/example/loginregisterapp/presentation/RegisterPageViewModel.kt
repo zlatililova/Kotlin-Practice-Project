@@ -12,10 +12,10 @@ import kotlinx.coroutines.launch
 import java.util.ArrayList
 
 class RegisterPageViewModel(
-    val validationEmail: ValidationEmail = ValidationEmail(),
-    val validationPassword: ValidationPassword = ValidationPassword(),
-    val validationName: ValidationName = ValidationName(),
-    val validationConfirmPassword: ValidationConfirmPassword = ValidationConfirmPassword()
+    val validationEmail: ValidationEmail,
+    val validationPassword: ValidationPassword,
+    val validationName: ValidationName,
+    val validationConfirmPassword: ValidationConfirmPassword
 ): ViewModel() {
     private var fname: String = ""
     fun setfname(value: String) {
