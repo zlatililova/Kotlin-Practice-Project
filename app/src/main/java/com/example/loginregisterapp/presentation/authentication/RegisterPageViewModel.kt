@@ -1,4 +1,4 @@
-package com.example.loginregisterapp.presentation
+package com.example.loginregisterapp.presentation.authentication
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

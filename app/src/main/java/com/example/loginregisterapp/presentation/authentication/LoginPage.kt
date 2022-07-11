@@ -1,4 +1,4 @@
-package com.example.loginregisterapp.presentation
+package com.example.loginregisterapp.presentation.authentication
 
 import android.os.Bundle
 import android.text.Editable
@@ -7,7 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -72,7 +75,10 @@ class LoginPage : Fragment() {
         })
 
         loginButton.setOnClickListener {
+            //setLoadingscreen(view)
             viewModel.login()
+            val navGraphNavigator = Navigation.findNavController(view)
+            navGraphNavigator.navigate(R.id.action_loginPage_to_home_page)
         }
 
         registerTransition.setOnClickListener {
@@ -80,10 +86,12 @@ class LoginPage : Fragment() {
             navGraphNavigator.navigate(R.id.action_loginPage_to_registerPage2)
         }
 
-        observeViewModel()
+        observeViewModel(view)
     }
 
-    private fun observeViewModel(){
+
+
+    private fun observeViewModel(view: View){
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.uiState.onEach {
@@ -93,7 +101,7 @@ class LoginPage : Fragment() {
                             passwordLayout.setError(null)
                             Toast.makeText(
                                 context,
-                                "Login successful",
+                                "Success",
                                 Toast.LENGTH_LONG
                             ).show()
                         }
@@ -114,11 +122,6 @@ class LoginPage : Fragment() {
                                     }
                                 }
                             }
-                        }
-                        is LoginPageViewModel.UIState.Loading -> {
-                            emailLayout.setError(null)
-                            passwordLayout.setError(null)
-
                         }
                         else -> {
 

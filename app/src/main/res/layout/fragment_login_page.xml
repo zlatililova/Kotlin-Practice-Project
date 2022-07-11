@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/loginPage"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".presentation.LoginPage">
+    tools:context=".presentation.authentication.LoginPage">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -13,38 +13,39 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:orientation="vertical"
-        android:layout_margin="50dp">
+        android:layout_margin="50dp"
+        android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/TextInputLayoutEmailAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/TextInputLayoutEmailAddress"
-            android:hint="@string/Email"
             android:layout_marginTop="10dp"
-            app:errorEnabled="true"            >
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/EmailAddress"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:inputType="textEmailAddress"
+            android:hint="@string/Email"
+            app:errorEnabled="true">
 
-                    />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/EmailAddress"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:inputType="textEmailAddress"
+
+                />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/TextInputLayoutPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/TextInputLayoutPassword"
-            android:hint="@string/Password"
             android:layout_marginTop="10dp"
+            android:hint="@string/Password"
             app:errorEnabled="true">
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/Password"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:inputType="textPassword"
-                />
+                android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
@@ -53,17 +54,16 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="50dp"
-            android:text="Submit"
-            android:enabled="false"/>
+            android:enabled="false"
+            android:text="Submit" />
 
         <TextView
+            android:id="@+id/text_to_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/text_to_login"
-            android:text="@string/link_register_today"
-            android:layout_marginTop="50dp"
             android:layout_gravity="center"
-            />
+            android:layout_marginTop="50dp"
+            android:text="@string/link_register_today" />
 
         <Button
             android:id="@+id/button_to_login"
@@ -71,8 +71,35 @@
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:textSize="10sp"
-            android:text="Register today" />
+            android:text="Register today"
+            android:textSize="10sp" />
+
+
 
     </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:alpha="0.0"
+        android:id="@+id/login_loading_layout">
+
+        <ProgressBar
+            android:id="@+id/login_loading_progress"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="150sp"
+            android:layout_gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 </FrameLayout>

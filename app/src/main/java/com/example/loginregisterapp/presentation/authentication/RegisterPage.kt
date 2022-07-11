@@ -1,8 +1,7 @@
-package com.example.loginregisterapp.presentation
+package com.example.loginregisterapp.presentation.authentication
 
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextUtils
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
