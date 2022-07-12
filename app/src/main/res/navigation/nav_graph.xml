@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/registerPage"
-        android:name="com.example.loginregisterapp.presentation.authentication.RegisterPage"
+        android:name="com.example.loginregisterapp.presentation.authentication.RegisterPageFragment"
         android:label="fragment_register_page"
         tools:layout="@layout/fragment_register_page" >
         <action

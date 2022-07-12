@@ -1,20 +1,18 @@
 package com.example.loginregisterapp.data.authentication
 
-import android.app.Activity
-import kotlinx.coroutines.delay
+
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class AuthDataImplenentation: AuthDataInt {
+class AuthDataImplenentation : AuthDataInt {
     override fun login(
-        email: String,
-        pass: String, onLogin: AuthDataInt.OnLogin
+        email: String, pass: String, onLogin: AuthDataInt.OnLogin
     ) {
 
         runBlocking { launch {
-            delay(1000)
-            onLogin.onError()
-        } }
+                onLogin.onSuccess()
+                //onLogin.onError("This user is not in the database")
+            } }
 
     }
 
@@ -24,8 +22,14 @@ class AuthDataImplenentation: AuthDataInt {
         fname: String,
         lname: String,
         confpass: String,
+        onRegister: AuthDataInt.OnRegister
 
-    ) {
+        ) {
+
+        runBlocking { launch {
+            onRegister.onSuccess()
+        } }
     }
+
 
 }

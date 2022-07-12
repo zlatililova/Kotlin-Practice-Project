@@ -25,7 +25,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 
-class RegisterPage : Fragment() {
+class RegisterPageFragment : Fragment() {
 
     lateinit var button: Button
     lateinit var emailLayout: TextInputLayout

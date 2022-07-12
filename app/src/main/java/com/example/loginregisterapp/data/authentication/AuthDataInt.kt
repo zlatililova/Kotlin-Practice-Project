@@ -1,17 +1,18 @@
 package com.example.loginregisterapp.data.authentication
 
-import android.app.Activity
+import android.view.View
 
 interface AuthDataInt {
-    fun login(email: String, pass: String, onLogin: OnLogin)
-    fun register(email: String, pass: String, fname: String, lname: String, confpass: String)
+    fun login(email: String, pass: String,  onLogin: OnLogin)
+    fun register(email: String, pass: String, fname: String, lname: String, confpass: String, onRegister: OnRegister)
 
     interface OnLogin{
         fun onSuccess()
-        fun onError()
+        fun onError(string: String?)
     }
 
     interface OnRegister{
         fun onSuccess()
+        fun onError(string: String?)
     }
 }
