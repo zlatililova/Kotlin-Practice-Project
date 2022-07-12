@@ -1,6 +1,7 @@
 package com.example.loginregisterapp.presentation.authentication
 
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
@@ -16,6 +17,8 @@ import androidx.lifecycle.repeatOnLifecycle
 
 import androidx.navigation.Navigation
 import com.example.loginregisterapp.R
+import com.example.loginregisterapp.presentation.BaseFragment
+import com.example.loginregisterapp.presentation.states.RegisterUIState
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.flow.launchIn
@@ -24,8 +27,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-
-class RegisterPageFragment : Fragment() {
+class RegisterPageFragment : BaseFragment() {
 
     lateinit var button: Button
     lateinit var emailLayout: TextInputLayout
@@ -36,9 +38,9 @@ class RegisterPageFragment : Fragment() {
     val viewModel: RegisterPageViewModel by viewModel()
 
 
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_register_page, container, false)
     }
@@ -52,6 +54,7 @@ class RegisterPageFragment : Fragment() {
         val pass = view.findViewById<TextInputEditText>(R.id.Register_Password)
         var confpass = view.findViewById<TextInputEditText>(R.id.Register_ConfirmPassword)
         button = view.findViewById(R.id.button_submit_register)
+        val backStackButton = view.findViewById<AppCompatImageView>(R.id.back_stack_btn)
         emailLayout = view.findViewById(R.id.Register_TextInputLayoutEmailAddress)
         passwordLayout = view.findViewById(R.id.Register_TextInputLayoutPassword)
         fnameLayout = view.findViewById(R.id.Register_TextInputLayoutFirstName)
@@ -60,134 +63,84 @@ class RegisterPageFragment : Fragment() {
 
 
 
-        fname.addTextChangedListener(object: TextWatcher {
+        fname.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(s:CharSequence, start:Int, before:Int, count:Int) {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 viewModel.setfname(s.toString())
+                fnameLayout.error = viewModel.checkFName()
                 changebutton(button, viewModel.checkValues())
             }
+
             override fun afterTextChanged(p0: Editable?) {}
         })
 
-        lname.addTextChangedListener(object: TextWatcher {
+        lname.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(s:CharSequence, start:Int, before:Int, count:Int) {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 viewModel.setlname(s.toString())
+                lnameLayout.error = viewModel.checkLName()
                 changebutton(button, viewModel.checkValues())
             }
+
             override fun afterTextChanged(p0: Editable?) {}
         })
 
-        email.addTextChangedListener(object: TextWatcher {
+        email.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(s:CharSequence, start:Int, before:Int, count:Int) {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 viewModel.setemail(s.toString())
+                emailLayout.error = viewModel.checkEmail()
                 changebutton(button, viewModel.checkValues())
             }
+
             override fun afterTextChanged(p0: Editable?) {}
         })
 
-        pass.addTextChangedListener(object: TextWatcher {
+        pass.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(s:CharSequence, start:Int, before:Int, count:Int) {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 viewModel.setpass(s.toString())
+                passwordLayout.error = viewModel.checkPass()
                 changebutton(button, viewModel.checkValues())
             }
+
             override fun afterTextChanged(p0: Editable?) {}
         })
 
-        confpass.addTextChangedListener(object: TextWatcher {
+        confpass.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(s:CharSequence, start:Int, before:Int, count:Int) {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 viewModel.setConfPass(s.toString())
+                confpassLayout.error = viewModel.checkConfPass()
                 changebutton(button, viewModel.checkValues())
             }
+
             override fun afterTextChanged(p0: Editable?) {}
         })
 
         button.setOnClickListener {
-            viewModel.register()
+            showProgress()
+            //delay
+            Handler().postDelayed({
+                viewModel.register()
+            }, 1000)
         }
 
-        observeViewModel()
-
-        val loginTransition = view.findViewById<Button>(R.id.button_to_register)
-
-        loginTransition.setOnClickListener {
-            val navGraphNavigator = Navigation.findNavController(view)
-            navGraphNavigator.navigate(R.id.action_registerPage_to_loginPage2)
-        }
-
-        val backStackButton = view.findViewById<AppCompatImageView>(R.id.back_stack_btn)
         backStackButton.setOnClickListener {
             val navGraphNavigator = Navigation.findNavController(view)
             navGraphNavigator.popBackStack()
         }
 
+        observeViewModel()
+
     }
 
-    private fun observeViewModel(){
+    private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiStateFlow.onEach {
                     when (it) {
-                        is RegisterPageViewModel.UIStateRegister.Success -> {
-                            emailLayout.setError(null)
-                            passwordLayout.setError(null)
-                            fnameLayout.setError(null)
-                            lnameLayout.setError(null)
-                            confpassLayout.setError(null)
-                            Toast.makeText(
-                                context,
-                                "Registration successful",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                        is RegisterPageViewModel.UIStateRegister.Error -> {
-                            it.errors.forEach{
-                                when (it) {
-                                    is RegisterPageViewModel.RegisterErrors.EmailError -> {
-                                        if(it.error == ""){
-                                            emailLayout.setError(null)
-                                        }
-                                        emailLayout.setError(it.error)
-                                    }
-                                    is RegisterPageViewModel.RegisterErrors.PassError -> {
-                                        if(it.error == ""){
-                                            passwordLayout.setError(null)
-                                        }
-                                        passwordLayout.setError(it.error)
-                                    }
-                                    is RegisterPageViewModel.RegisterErrors.FNameError -> {
-                                        if(it.error == ""){
-                                            fnameLayout.setError(null)
-                                        }
-                                        fnameLayout.setError(it.error)
-                                    }
-                                    is RegisterPageViewModel.RegisterErrors.LNameError -> {
-                                        if(it.error == ""){
-                                            lnameLayout.setError(null)
-                                        }
-                                        lnameLayout.setError(it.error)
-                                    }
-                                    is RegisterPageViewModel.RegisterErrors.ConfPassError -> {
-                                        if(it.error == ""){
-                                            confpassLayout.setError(null)
-                                        }
-                                        confpassLayout.setError(it.error)
-                                    }
-                                }
-                            }
-                        }
-                        is RegisterPageViewModel.UIStateRegister.Loading -> {
-                            emailLayout.setError(null)
-                            passwordLayout.setError(null)
-                            fnameLayout.setError(null)
-                            lnameLayout.setError(null)
-                            confpassLayout.setError(null)
-
-                        }
-                        else -> {}
+                       is RegisterUIState
                     }
                 }.launchIn(this)
             }
@@ -195,7 +148,7 @@ class RegisterPageFragment : Fragment() {
         }
     }
 
-    private fun changebutton(button: Button, state: Boolean){
+    private fun changebutton(button: Button, state: Boolean) {
         button.isEnabled = state
     }
 

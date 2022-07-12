@@ -2,10 +2,14 @@ package com.example.loginregisterapp.presentation.authentication
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.loginregisterapp.data.authentication.AuthDataInt
 import com.example.loginregisterapp.domain.use_case.ValidationConfirmPassword
 import com.example.loginregisterapp.domain.use_case.ValidationEmail
 import com.example.loginregisterapp.domain.use_case.ValidationName
 import com.example.loginregisterapp.domain.use_case.ValidationPassword
+import com.example.loginregisterapp.presentation.states.LoginUIState
+import com.example.loginregisterapp.presentation.states.RegisterUIState
+import com.example.loginregisterapp.presentation.states.UIStateRegister
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -38,61 +42,31 @@ class RegisterPageViewModel(
         confPass = value
         }
 
-    private val _uiStateFlow = MutableStateFlow<UIStateRegister>(UIStateRegister.Initial)
-    val uiStateFlow : StateFlow<UIStateRegister> = _uiStateFlow
+    private val _uiStateFlow = MutableStateFlow<RegisterUIState>(RegisterUIState.Initial)
+    val uiStateFlow : StateFlow<RegisterUIState> = _uiStateFlow
 
-    sealed class UIStateRegister {
-        object Initial: UIStateRegister()
-        object Success: UIStateRegister()
-        object Loading: UIStateRegister()
-        class Error(val errors: ArrayList<RegisterErrors>): UIStateRegister()
-
-    }
-
-    sealed class RegisterErrors{
-        class EmailError(val error: String): RegisterErrors()
-        class PassError(val error: String): RegisterErrors()
-        class FNameError(val error: String): RegisterErrors()
-        class LNameError(val error: String): RegisterErrors()
-        class ConfPassError(val error: String): RegisterErrors()
-    }
 
     fun register(){
         viewModelScope.launch {
-            val validEmail = validationEmail.execute(email)
-            val validPass = validationPassword.execute(pass)
-            val validFName = validationName.execute(fname)
-            val validLName = validationName.execute(lname)
-            val validConfPass = validationConfirmPassword.execute(pass, confPass)
 
-            if(validEmail.successful && validPass.successful && validFName.successful && validConfPass.successful && validLName.successful){
-                _uiStateFlow.emit(UIStateRegister.Success)
-            }
-            else{
-                val errors : ArrayList<RegisterErrors> = ArrayList()
-                validEmail.errors?.let {
-                    errors.add(RegisterErrors.EmailError(validEmail.errors))
-                }
-                validPass.errors?.let {
-                    errors.add(RegisterErrors.PassError(validPass.errors))
-                }
-                validFName.errors?.let {
-                    errors.add(RegisterErrors.FNameError(validFName.errors))
-                }
-                validLName.errors?.let {
-                    errors.add(RegisterErrors.LNameError(validLName.errors))
-                }
-                validConfPass.errors?.let {
-                    errors.add(RegisterErrors.ConfPassError(validConfPass.errors))
-                }
-                _uiStateFlow.emit(UIStateRegister.Error(errors))
-
-            }
-
-
+            _uiStateFlow.emit(RegisterUIState.Loading)
+            println("Loading emited")
         }
 
+        loginUseCase.execute(email = email, pass = pass, object : AuthDataInt.OnLogin {
+            override fun onSuccess() {
+                viewModelScope.launch {
+                    _uiStateFlow.emit(LoginUIState.Success)
+                }
+            }
 
+            override fun onError(string: String?) {
+                viewModelScope.launch {
+                    _uiStateFlow.emit(LoginUIState.Error(string))
+                }
+            }
+
+        })
     }
 
     fun checkValues(): Boolean{
@@ -101,4 +75,29 @@ class RegisterPageViewModel(
         }
         return false
     }
+
+    fun checkEmail(): String {
+        val validEmail = validationEmail.execute(email)
+        return validEmail.errors
+    }
+    fun checkPass(): String {
+        val validPass = validationPassword.execute(pass)
+        return validPass.errors
+    }
+    fun checkFName(): String {
+        val checkName = validationName.execute(fname)
+        return checkName.errors
+
+    }
+    fun checkLName(): String {
+        val validLName = validationName.execute(lname)
+        return validLName.errors
+
+    }
+    fun checkConfPass(): String {
+        val validConfPass = validationConfirmPassword.execute(password = pass, confirmPassword = confPass)
+        return validConfPass.errors
+
+    }
+
 }
