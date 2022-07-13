@@ -3,23 +3,19 @@ package com.example.loginregisterapp.presentation.authentication
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.loginregisterapp.data.authentication.AuthDataInt
-import com.example.loginregisterapp.domain.use_case.ValidationConfirmPassword
-import com.example.loginregisterapp.domain.use_case.ValidationEmail
-import com.example.loginregisterapp.domain.use_case.ValidationName
-import com.example.loginregisterapp.domain.use_case.ValidationPassword
-import com.example.loginregisterapp.presentation.states.LoginUIState
+import com.example.loginregisterapp.domain.use_case.*
 import com.example.loginregisterapp.presentation.states.RegisterUIState
-import com.example.loginregisterapp.presentation.states.UIStateRegister
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.util.ArrayList
+
 
 class RegisterPageViewModel(
     val validationEmail: ValidationEmail,
     val validationPassword: ValidationPassword,
     val validationName: ValidationName,
-    val validationConfirmPassword: ValidationConfirmPassword
+    val validationConfirmPassword: ValidationConfirmPassword,
+    val registerUseCase: RegisterUseCase
 ): ViewModel() {
     private var fname: String = ""
     fun setfname(value: String) {
@@ -53,16 +49,16 @@ class RegisterPageViewModel(
             println("Loading emited")
         }
 
-        loginUseCase.execute(email = email, pass = pass, object : AuthDataInt.OnLogin {
+        registerUseCase.execute(email = email, pass = pass, fname = fname, lname = lname, confpass = confPass, onRegister = object : AuthDataInt.OnRegister {
             override fun onSuccess() {
                 viewModelScope.launch {
-                    _uiStateFlow.emit(LoginUIState.Success)
+                    _uiStateFlow.emit(RegisterUIState.Success)
                 }
             }
 
             override fun onError(string: String?) {
                 viewModelScope.launch {
-                    _uiStateFlow.emit(LoginUIState.Error(string))
+                    _uiStateFlow.emit(RegisterUIState.Error(string))
                 }
             }
 

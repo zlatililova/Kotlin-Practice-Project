@@ -14,8 +14,9 @@ val appModule = module{
         factory { ValidationName() }
         factory { ValidationConfirmPassword() }
         factory { LoginUseCase(authDataInt = get()) }
+        factory { RegisterUseCase(authDataInt = get()) }
         factory { LoginPageViewModel(validationEmail = get(), validationPassword = get(), loginUseCase = get()) }
-        factory { RegisterPageViewModel(validationPassword = get(), validationEmail = get(), validationConfirmPassword = get(), validationName = get()) }
+        factory { RegisterPageViewModel(validationPassword = get(), validationEmail = get(), validationConfirmPassword = get(), validationName = get(), registerUseCase = get() )}
         /*factory { LoginViewModel(get()) }
         factory { ProfileViewModel(get()) }*/
 

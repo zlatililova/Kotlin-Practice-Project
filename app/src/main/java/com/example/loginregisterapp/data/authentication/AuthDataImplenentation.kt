@@ -28,6 +28,7 @@ class AuthDataImplenentation : AuthDataInt {
 
         runBlocking { launch {
             onRegister.onSuccess()
+            //onRegister.onError("Cannot create the user!")
         } }
     }
 

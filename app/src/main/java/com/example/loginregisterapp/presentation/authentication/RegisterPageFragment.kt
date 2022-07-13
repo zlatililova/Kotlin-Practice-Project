@@ -123,6 +123,7 @@ class RegisterPageFragment : BaseFragment() {
             //delay
             Handler().postDelayed({
                 viewModel.register()
+
             }, 1000)
         }
 
@@ -131,16 +132,40 @@ class RegisterPageFragment : BaseFragment() {
             navGraphNavigator.popBackStack()
         }
 
-        observeViewModel()
+        observeViewModel(view)
 
     }
 
-    private fun observeViewModel() {
+    private fun observeViewModel(view: View) {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiStateFlow.onEach {
                     when (it) {
-                       is RegisterUIState
+                       is RegisterUIState.Success -> {
+                           Toast.makeText(
+                               context,
+                               "Success",
+                               Toast.LENGTH_LONG
+                           ).show()
+                           hideProgress()
+                           button.isEnabled = true
+                           val navGraphNavigator = Navigation.findNavController(view)
+                           navGraphNavigator.navigate(R.id.action_registerPage_to_home_page)
+                       }
+                        is RegisterUIState.Error -> {
+                            Toast.makeText(
+                                context,
+                                "Error: " + it.error,
+                                Toast.LENGTH_LONG
+                            ).show()
+                            hideProgress()
+                            button.isEnabled = true
+                        }
+                        is RegisterUIState.Loading -> {
+                            button.isEnabled = false
+
+                        }
+                        else ->{}
                     }
                 }.launchIn(this)
             }
