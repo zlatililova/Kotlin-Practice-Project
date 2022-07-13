@@ -7,21 +7,32 @@
 
     <fragment
         android:id="@+id/loginPage"
-        android:name="com.example.loginregisterapp.presentation.LoginPage"
+        android:name="com.example.loginregisterapp.presentation.authentication.LoginPage"
         android:label="fragment_login_page"
         tools:layout="@layout/fragment_login_page" >
         <action
             android:id="@+id/action_loginPage_to_registerPage2"
             app:destination="@id/registerPage" />
+        <action
+            android:id="@+id/action_loginPage_to_home_page"
+            app:destination="@id/home_page" />
     </fragment>
     <fragment
         android:id="@+id/registerPage"
-        android:name="com.example.loginregisterapp.presentation.RegisterPage"
+        android:name="com.example.loginregisterapp.presentation.authentication.RegisterPageFragment"
         android:label="fragment_register_page"
         tools:layout="@layout/fragment_register_page" >
         <action
             android:id="@+id/action_registerPage_to_loginPage2"
             app:destination="@id/loginPage" />
+        <action
+            android:id="@+id/action_registerPage_to_home_page"
+            app:destination="@id/home_page" />
     </fragment>
+    <fragment
+        android:id="@+id/home_page"
+        android:name="com.example.loginregisterapp.home_page"
+        android:label="fragment_home_page"
+        tools:layout="@layout/fragment_home_page" />
 
 </navigation>

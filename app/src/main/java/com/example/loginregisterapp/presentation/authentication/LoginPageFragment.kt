@@ -1,6 +1,7 @@
-package com.example.loginregisterapp.presentation
+package com.example.loginregisterapp.presentation.authentication
 
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -9,11 +10,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.Navigation
 import com.example.loginregisterapp.R
+import com.example.loginregisterapp.presentation.BaseFragment
+import com.example.loginregisterapp.presentation.states.LoginUIState
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.flow.launchIn
@@ -22,10 +24,10 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class LoginPage : Fragment() {
+class LoginPage : BaseFragment() {
 
-    lateinit var loginButton: Button
-    lateinit var registerTransition: Button
+    private lateinit var loginButton: Button
+    private lateinit var registerTransition: Button
     val viewModel: LoginPageViewModel by viewModel()
     lateinit var emailLayout: TextInputLayout
     lateinit var passwordLayout: TextInputLayout
@@ -55,7 +57,8 @@ class LoginPage : Fragment() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 viewModel.setEmail(s.toString())
-                changebutton(loginButton, viewModel.checkValues())
+                emailLayout.error = viewModel.checkEmail()
+                changeButton(loginButton, viewModel.checkValues())
             }
 
             override fun afterTextChanged(p0: Editable?) {}
@@ -65,14 +68,20 @@ class LoginPage : Fragment() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 viewModel.setPass(s.toString())
-                changebutton(loginButton, viewModel.checkValues())
+                passwordLayout.error = viewModel.checkPass()
+                changeButton(loginButton, viewModel.checkValues())
             }
 
             override fun afterTextChanged(p0: Editable?) {}
         })
 
         loginButton.setOnClickListener {
-            viewModel.login()
+            showProgress()
+            //delay
+            Handler().postDelayed({
+                viewModel.login()
+            }, 1000)
+
         }
 
         registerTransition.setOnClickListener {
@@ -80,49 +89,39 @@ class LoginPage : Fragment() {
             navGraphNavigator.navigate(R.id.action_loginPage_to_registerPage2)
         }
 
-        observeViewModel()
+        observeViewModel(view)
     }
 
-    private fun observeViewModel(){
+
+    private fun observeViewModel(view: View) {
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.onEach {
                     when (it) {
-                        is LoginPageViewModel.UIState.Success -> {
-                            emailLayout.setError(null)
-                            passwordLayout.setError(null)
+                        is LoginUIState.Success -> {
                             Toast.makeText(
                                 context,
-                                "Login successful",
+                                "Success",
                                 Toast.LENGTH_LONG
                             ).show()
+                            hideProgress()
+                            val navGraphNavigator = Navigation.findNavController(view)
+                            navGraphNavigator.navigate(R.id.action_loginPage_to_home_page)
                         }
-                        is LoginPageViewModel.UIState.Error -> {
-                            it.errors.forEach{
-                                when (it) {
-                                    is LoginPageViewModel.Errors.EmailError -> {
-                                        if(it.error == ""){
-                                            emailLayout.setError(null)
-                                        }
-                                        emailLayout.setError(it.error)
-                                    }
-                                    is LoginPageViewModel.Errors.PassError -> {
-                                        if(it.error == ""){
-                                            passwordLayout.setError(null)
-                                        }
-                                        passwordLayout.setError(it.error)
-                                    }
-                                }
-                            }
+                        is LoginUIState.Error -> {
+                            Toast.makeText(
+                                context,
+                                "Error: " + it.error,
+                                Toast.LENGTH_LONG
+                            ).show()
+                            hideProgress()
                         }
-                        is LoginPageViewModel.UIState.Loading -> {
-                            emailLayout.setError(null)
-                            passwordLayout.setError(null)
-
+                        is LoginUIState.Loading -> {
+                            println("Loading state")
+                            loginButton.isEnabled = false
+                            registerTransition.isEnabled = false
                         }
-                        else -> {
-
-                        }
+                        else->{}
                     }
                 }.launchIn(this)
             }
@@ -130,9 +129,10 @@ class LoginPage : Fragment() {
         }
     }
 
-    private fun changebutton(button: Button, state: Boolean){
+    private fun changeButton(button: Button, state: Boolean) {
         button.isEnabled = state
     }
+
 }
 
 
