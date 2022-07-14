@@ -53,6 +53,7 @@ class LoginPage : BaseFragment() {
         val password = view.findViewById<TextInputEditText>(R.id.Password)
 
 
+
         email.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -81,6 +82,9 @@ class LoginPage : BaseFragment() {
             Handler().postDelayed({
                 viewModel.login()
             }, 1000)
+
+            //crashlytics test - leave it as comments
+            //throw RuntimeException("Test Crash")
 
         }
 
