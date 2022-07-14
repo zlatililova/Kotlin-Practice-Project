@@ -14,8 +14,8 @@
             android:id="@+id/action_loginPage_to_registerPage2"
             app:destination="@id/registerPage" />
         <action
-            android:id="@+id/action_loginPage_to_home_page"
-            app:destination="@id/home_page" />
+            android:id="@+id/action_loginPage_to_homePageFragment"
+            app:destination="@id/homePageFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerPage"
@@ -26,13 +26,12 @@
             android:id="@+id/action_registerPage_to_loginPage2"
             app:destination="@id/loginPage" />
         <action
-            android:id="@+id/action_registerPage_to_home_page"
-            app:destination="@id/home_page" />
+            android:id="@+id/action_registerPage_to_homePageFragment"
+            app:destination="@id/homePageFragment" />
     </fragment>
     <fragment
-        android:id="@+id/home_page"
-        android:name="com.example.loginregisterapp.home_page"
-        android:label="fragment_home_page"
-        tools:layout="@layout/fragment_home_page" />
+        android:id="@+id/homePageFragment"
+        android:name="com.example.loginregisterapp.presentation.homePage.HomePageFragment"
+        android:label="HomePageFragment" />
 
 </navigation>
