@@ -142,15 +142,15 @@ class RegisterPageFragment : BaseFragment() {
                 viewModel.uiStateFlow.onEach {
                     when (it) {
                        is RegisterUIState.Success -> {
-                           Toast.makeText(
+                           /*Toast.makeText(
                                context,
                                "Success",
                                Toast.LENGTH_LONG
-                           ).show()
+                           ).show()*/
                            hideProgress()
                            button.isEnabled = true
                            val navGraphNavigator = Navigation.findNavController(view)
-                           navGraphNavigator.navigate(R.id.action_registerPage_to_home_page)
+                           navGraphNavigator.navigate(R.id.action_registerPage_to_homePageFragment)
                        }
                         is RegisterUIState.Error -> {
                             Toast.makeText(

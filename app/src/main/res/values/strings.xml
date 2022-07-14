@@ -9,4 +9,6 @@
     <string name="register_today">Register Today!</string>
     <string name="link_register_today">Don\'t have an account?</string>
     <string name="have_an_account">Already have an account?</string>
+    <string name="last_10_runs">Here are your last 10 runs:</string>
+    <string name="welcome_to_movelsys">Welcome to MovElsys!</string>
 </resources>

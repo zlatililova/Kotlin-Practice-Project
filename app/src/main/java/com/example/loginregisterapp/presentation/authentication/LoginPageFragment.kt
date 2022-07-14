@@ -84,6 +84,8 @@ class LoginPage : BaseFragment() {
 
         }
 
+        /*recycler review*/
+
         registerTransition.setOnClickListener {
             val navGraphNavigator = Navigation.findNavController(view)
             navGraphNavigator.navigate(R.id.action_loginPage_to_registerPage2)
@@ -106,14 +108,14 @@ class LoginPage : BaseFragment() {
                             ).show()
                             hideProgress()
                             val navGraphNavigator = Navigation.findNavController(view)
-                            navGraphNavigator.navigate(R.id.action_loginPage_to_home_page)
+                            navGraphNavigator.navigate(R.id.action_loginPage_to_homePageFragment)
                         }
                         is LoginUIState.Error -> {
-                            Toast.makeText(
+                            /*Toast.makeText(
                                 context,
                                 "Error: " + it.error,
                                 Toast.LENGTH_LONG
-                            ).show()
+                            ).show()*/
                             hideProgress()
                         }
                         is LoginUIState.Loading -> {
